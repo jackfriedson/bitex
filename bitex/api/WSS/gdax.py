@@ -55,6 +55,6 @@ class GDAXWSS(WSSAPI):
                 self._controller_q.put('restart')
 
             if 'product_id' in data:
-                self.data_q.put(('order_book', data['product_id'],
+                self.data_q.put((data['type'], data['product_id'],
                                  data, time.time()))
         self.conn = None
