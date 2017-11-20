@@ -210,7 +210,7 @@ class BitfinexWSS(WSSAPI):
             log.info("BitfinexWSS.start(): Thread not started! "
                      "self.processing_thread is populated!")
 
-        self.setup_subscriptions()
+        self.config(decimals_as_strings=True)
 
     def stop(self):
         """
