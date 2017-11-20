@@ -15,12 +15,17 @@ log = logging.getLogger(__name__)
 
 
 class GDAXWSS(WSSAPI):
-    def __init__(self):
+    def __init__(self, pairs=None, channels=None):
         super(GDAXWSS, self).__init__('wss://ws-feed.gdax.com', 'GDAX')
         self.conn = None
-        r = requests.get('https://api.gdax.com/products').json()
-        self.pairs = [x['id'] for x in r]
+        self.channels = channels or []
         self._data_thread = None
+
+        if pairs:
+            self.pairs = pairs
+        else:
+            r = requests.get('https://api.gdax.com/products').json()
+            self.pairs = [x['id'] for x in r]
 
     def start(self):
         super(GDAXWSS, self).start()
@@ -36,8 +41,13 @@ class GDAXWSS(WSSAPI):
 
     def _process_data(self):
         self.conn = create_connection(self.addr, timeout=4)
-        payload = json.dumps({'type': 'subscribe', 'product_ids': self.pairs})
-        self.conn.send(payload)
+        payload = {
+            'type': 'subscribe',
+            'product_ids': self.pairs,
+        }
+        if self.channels:
+            payload.update({'channels': self.channels})
+        self.conn.send(json.dumps(payload))
         while self.running:
             try:
                 data = json.loads(self.conn.recv())
