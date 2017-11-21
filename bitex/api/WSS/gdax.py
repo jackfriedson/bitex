@@ -51,7 +51,8 @@ class GDAXWSS(WSSAPI):
         while self.running:
             try:
                 data = json.loads(self.conn.recv())
-            except (WebSocketTimeoutException, ConnectionResetError):
+            except (WebSocketTimeoutException, ConnectionResetError) as e:
+                log.debug(e)
                 self._controller_q.put('restart')
 
             if 'product_id' in data:

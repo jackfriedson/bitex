@@ -1,5 +1,7 @@
 # Import Built-Ins
+import json
 import logging
+import time
 
 # Import Third-Party
 import pusherclient
@@ -79,6 +81,7 @@ class BitstampWSS(WSSAPI):
 
     def stop(self):
         super(BitstampWSS, self).stop()
+        self.pusher.disconnect()
         self.pusher = None
 
     """
@@ -94,7 +97,7 @@ class BitstampWSS(WSSAPI):
         :param data:
         :return:
         """
-        self.data_q.put(('live_trades', pair, data))
+        self.data_q.put(('live_trades', pair, json.loads(data), time.time()))
 
     def btcusd_lt_callback(self, data):
         self.live_trades_callback('BTCUSD', data)
@@ -125,7 +128,7 @@ class BitstampWSS(WSSAPI):
         :param data:
         :return:
         """
-        self.data_q.put(('order_book', pair, data))
+        self.data_q.put(('order_book', pair, json.loads(data), time.time()))
 
     def btcusd_ob_callback(self, data):
         self.order_book_callback('BTCUSD', data)
@@ -157,7 +160,7 @@ class BitstampWSS(WSSAPI):
         :param data:
         :return:
         """
-        self.data_q.put(('diff_order_book', pair, data))
+        self.data_q.put(('diff_order_book', pair, json.loads(data), time.time()))
 
     def btcusd_dob_callback(self, data):
         self.diff_order_book_callback('BTCUSD', data)
@@ -189,7 +192,7 @@ class BitstampWSS(WSSAPI):
         :param data:
         :return:
         """
-        self.data_q.put(('live_orders', pair, data))
+        self.data_q.put(('live_orders', pair, json.loads(data), time.time()))
 
     def btcusd_lo_callback(self, data):
         self.live_orders_callback('BTCUSD', data)
