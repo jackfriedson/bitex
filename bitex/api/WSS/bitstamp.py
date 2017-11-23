@@ -72,15 +72,12 @@ class BitstampWSS(WSSAPI):
         the relevant channels, before initializing a connection.
         :return:
         """
-        super(BitstampWSS, self).start()
-
         self.pusher = pusherclient.Pusher(self.addr, **self.__pusher_options)
         self.pusher.connection.bind('pusher:connection_established',
                                     self._register_bindings)
         self.pusher.connect()
 
     def stop(self):
-        super(BitstampWSS, self).stop()
         self.pusher.disconnect()
         self.pusher = None
 
