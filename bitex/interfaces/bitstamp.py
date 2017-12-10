@@ -17,9 +17,15 @@ from bitex.formatters.bitstamp import BtstFormatter as fmt
 log = logging.getLogger(__name__)
 
 
+CURRENCY_MAP = {
+    'XRP': 'ripple'
+}
+
+
 class Bitstamp(BitstampREST):
-    def __init__(self, key='', secret='', key_file='', websocket=False):
-        super(Bitstamp, self).__init__(key, secret)
+
+    def __init__(self, key='', secret='', key_file='', websocket=False, **kwargs):
+        super(Bitstamp, self).__init__(key, secret, **kwargs)
         if key_file:
             self.load_key(key_file)
 
@@ -78,14 +84,27 @@ class Bitstamp(BitstampREST):
         return self.private_query('v2/balance/')
 
     @return_api_response(fmt.withdraw)
-    def withdraw(self, size, tar_addr, **kwargs):
+    def withdraw(self, size, tar_addr, currency=None, **kwargs):
+        if not currency or currency == 'BTC':
+            endpoint = 'bitcoin_withdrawal/'
+        else:
+            currency = CURRENCY_MAP.get(currency, currency).lower()
+            endpoint = 'v2/{}_withdrawal/'.format(currency.lower())
+
         q = {'amount': size, 'address': tar_addr}
         q.update(kwargs)
-        return self.private_query('bitcoin_withdrawal/', params=q)
+        return self.private_query(endpoint, params=q)
 
     @return_api_response(fmt.deposit)
-    def deposit_address(self, **kwargs):
-        return self.private_query('bitcoin_deposit_address/')
+    def deposit_address(self, currency=None, **kwargs):
+        if not currency or currency == 'BTC':
+            endpoint = 'bitcoin_deposit_address/'
+        else:
+            currency = CURRENCY_MAP.get(currency, currency).lower()
+            endpoint = 'v2/{}_address/'.format(currency)
+
+        return self.private_query(endpoint)
+
 
     """
     Exchange Specific Methods

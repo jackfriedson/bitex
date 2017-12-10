@@ -18,8 +18,8 @@ log = logging.getLogger(__name__)
 
 
 class GDAX(GDAXRest):
-    def __init__(self, key='', secret='', key_file='', websocket=False):
-        super(GDAX, self).__init__(key, secret)
+    def __init__(self, key='', secret='', key_file='', websocket=False, **kwargs):
+        super(GDAX, self).__init__(key, secret, **kwargs)
         if key_file:
             self.load_key(key_file)
         if websocket:
@@ -85,10 +85,15 @@ class GDAX(GDAXRest):
 
     @return_api_response(fmt.withdraw)
     def withdraw(self, size, tar_addr, **kwargs):
-        raise NotImplementedError()
+        q = {
+            'amount': size,
+            'crypto_address': tar_addr,
+            'currency': kwargs.pop('currency'),
+        }
+        return self.private_query('withdrawals/crypto', params=q)
 
     @return_api_response(fmt.deposit)
-    def deposit_address(self, **kwargs):
+    def deposit_address(self, currency, **kwargs):
         raise NotImplementedError()
 
     """

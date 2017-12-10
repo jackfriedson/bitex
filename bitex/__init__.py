@@ -1,9 +1,3 @@
-import logging
-log = logging.getLogger(__name__)
-log.setLevel(logging.WARNING)
-log.warning("The API clients available in this package are deprecated "
-                                    "and will be no longer available in their current form "
-                                    "starting with version 2.0!")
 from bitex.interfaces import Kraken, Bitfinex, Bitstamp, CCEX, Coincheck
 from bitex.interfaces import Cryptopia, Gemini, ItBit, OKCoin, RockTradingLtd
 from bitex.interfaces import Yunbi, Bittrex, Poloniex, Quoine, QuadrigaCX

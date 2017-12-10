@@ -18,8 +18,8 @@ log = logging.getLogger(__name__)
 
 
 class HitBtc(HitBTCREST):
-    def __init__(self, key='', secret='', key_file='', websocket=False):
-        super(HitBtc, self).__init__(key, secret)
+    def __init__(self, key='', secret='', key_file='', websocket=False, **kwargs):
+        super(HitBtc, self).__init__(key, secret, **kwargs)
         if key_file:
             self.load_key(key_file)
         if websocket:
@@ -37,7 +37,10 @@ class HitBtc(HitBTCREST):
     def private_query(self, endpoint, method_verb=None, **kwargs):
         if not method_verb:
             method_verb = 'GET'
-        return self.query(method_verb, endpoint, authenticate=True, **kwargs)
+        if method_verb == 'POST':
+            params = kwargs.pop('params')
+            kwargs['data'] = params
+        return self.query(method_verb, endpoint, auth=(self.key, self.secret), **kwargs)
 
     """
     BitEx Standardized Methods
@@ -54,7 +57,7 @@ class HitBtc(HitBTCREST):
         if pair == 'all':
             return self.public_query('ticker', params=q)
         else:
-            return self.public_query('%s/ticker' % pair, params=q)
+            return self.public_query('ticker/%s' % pair, params=q)
 
     @return_api_response(fmt.trades)
     def trades(self, pair, **kwargs):
@@ -65,17 +68,17 @@ class HitBtc(HitBTCREST):
         q = {'symbol': pair, 'price': price, 'quantity': size, 'side': side,
              'clientOrderId': order_id}
         q.update(kwargs)
-        return self.private_query('trading/new_order', method_verb='POST', params=q)
+        return self.private_query('order', method_verb='POST', params=q)
 
     @return_api_response(fmt.order)
     def bid(self, pair, price, size, order_id=None, **kwargs):
         order_id = order_id if order_id else str(time.time())
-        self._place_order(pair, size, price, 'buy', order_id, **kwargs)
+        return self._place_order(pair, size, price, 'buy', order_id, **kwargs)
 
     @return_api_response(fmt.order)
     def ask(self, pair, price, size, order_id=None, **kwargs):
         order_id = order_id if order_id else str(time.time())
-        self._place_order(pair, size, price, 'sell', order_id, **kwargs)
+        return self._place_order(pair, size, price, 'sell', order_id, **kwargs)
 
     @return_api_response(fmt.cancel)
     def cancel_order(self, order_id, all=False, **kwargs):
@@ -99,13 +102,13 @@ class HitBtc(HitBTCREST):
     @return_api_response(fmt.withdraw)
     def withdraw(self, size, tar_addr, currency=None, **kwargs):
         currency = 'BTC' if not currency else currency
-        q = {'amount': size, 'currency_code': currency, 'address': tar_addr}
+        q = {'amount': size, 'currency': currency, 'address': tar_addr, 'includeFee': True}
         q.update(kwargs)
-        return self.private_query('payment/payout', params=q)
+        return self.private_query('account/crypto/withdraw', method_verb='POST', params=q)
 
     @return_api_response(fmt.deposit)
     def deposit_address(self, currency=None, **kwargs):
-        return self.private_query('payment/address/%s' % currency, params=kwargs)
+        return self.private_query('account/crypto/address/%s' % currency, params=kwargs)
 
 if __name__ == ' __main__':
     k = HitBtc()

@@ -107,3 +107,17 @@ class KrknFormatter(Formatter):
             return True
         else:
             return False
+
+    def balance(data, *args, **kwargs):
+
+        def format_ticker(ticker):
+            if ticker.startswith('Z') or ticker.startswith('X'):
+                ticker = ticker[1:]
+            if ticker == 'XBT':
+                ticker = 'BTC'
+            return ticker
+
+        return {
+            format_ticker(cur): float(bal)
+            for cur, bal in data['result'].items()
+        }

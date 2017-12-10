@@ -45,7 +45,8 @@ class BitstampWSS(WSSAPI):
                          'live_trades_xrpeur', 'live_trades_xrpbtc',
                          'order_book_btceur', 'order_book_eurusd',
                          'order_book_xrpusd', 'order_book_xrpeur',
-                         'order_book_xrpbtc', 'diff_order_book', 'order_book',
+                         'order_book_xrpbtc', 'order_book_ethbtc',
+                         'diff_order_book', 'order_book',
                          'diff_order_book_btceur', 'diff_order_book_eurusd',
                          'diff_order_book_xrpusd', 'diff_order_book_xrpeur',
                          'diff_order_book_xrpbtc', 'live_orders',
@@ -144,6 +145,9 @@ class BitstampWSS(WSSAPI):
 
     def xrpbtc_ob_callback(self, data):
         self.order_book_callback('XRPBTC', data)
+
+    def ethbtc_ob_callback(self, data):
+        self.order_book_callback('ETHBTC', data)
 
     """
     Custom Diff Order Book Callback
@@ -266,7 +270,8 @@ class BitstampWSS(WSSAPI):
                     'order_book_eurusd': self.eurusd_ob_callback,
                     'order_book_xrpusd': self.xrpusd_ob_callback,
                     'order_book_xrpeur': self.xrpeur_ob_callback,
-                    'order_book_xrpbtc': self.xrpbtc_ob_callback}
+                    'order_book_xrpbtc': self.xrpbtc_ob_callback,
+                    'order_book_ethbtc': self.ethbtc_ob_callback,}
 
         event = 'data'
         self._bind_channels(event, channels)

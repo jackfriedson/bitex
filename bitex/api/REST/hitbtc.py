@@ -17,8 +17,8 @@ log = logging.getLogger(__name__)
 
 
 class HitBTCREST(APIClient):
-    def __init__(self, key=None, secret=None, api_version='1',
-                 url='http://api.hitbtc.com/api/', timeout=5):
+    def __init__(self, key=None, secret=None, api_version='2',
+                 url='https://api.hitbtc.com/api', timeout=5):
         api_version = '' if not api_version else api_version
         super(HitBTCREST, self).__init__(url, api_version=api_version,
                                          key=key, secret=secret,
@@ -30,12 +30,12 @@ class HitBTCREST(APIClient):
         except KeyError:
             params = {}
         nonce = self.nonce()
-        kwargs['nonce'] = nonce
-        kwargs['apikey'] = self.key
+        params['nonce'] = nonce
+        params['apikey'] = self.key
         msg = endpoint_path + urllib.parse.urlencode(params)
 
         signature = hmac.new(self.secret.encode(encoding='utf-8'),
-                             msg.encode(encoding='utf-8'), hashlib.sha512)
+                             msg.encode(encoding='utf-8'), hashlib.sha512).digest()
         headers = {'Api-signature': signature}
         return self.uri + msg, {'headers': headers, 'data': params}
 

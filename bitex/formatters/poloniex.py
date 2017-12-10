@@ -14,17 +14,25 @@ class PlnxFormatter(Formatter):
 
     @staticmethod
     def ticker(data, *args, **kwargs):
-        data = data[args[0]]
+        data = data[args[1]]
         return (data['highestBid'], data['lowestAsk'], None, None, None, None,
                 data['last'], None, None)
 
     @staticmethod
     def order(data, *args, **kwargs):
-        try:
-            return data['orderNumber']
-        except KeyError:
-            return False
+        return data.get('orderNumber')
 
     @staticmethod
     def cancel(data, *args, **kwargs):
-        return True if data['success'] else False
+        return True if data.get('success') else False
+
+    @staticmethod
+    def withdraw(data, *args, **kwargs):
+        if not data:
+            return False
+
+        return {
+            'currency': kwargs.get('currency'),
+            'amount': args[1],
+            'target_address': args[2],
+        }

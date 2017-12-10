@@ -17,8 +17,8 @@ log = logging.getLogger(__name__)
 
 
 class Poloniex(PoloniexREST):
-    def __init__(self, key='', secret='', key_file='', websocket=False):
-        super(Poloniex, self).__init__(key, secret)
+    def __init__(self, key='', secret='', key_file='', websocket=False, **kwargs):
+        super(Poloniex, self).__init__(key, secret, **kwargs)
         if key_file:
             self.load_key(key_file)
         if websocket:
@@ -87,14 +87,13 @@ class Poloniex(PoloniexREST):
         return self.private_query('tradingApi', params=q)
 
     @return_api_response(fmt.withdraw)
-    def withdraw(self, size, tar_addr, **kwargs):
-        q = {'command': 'withdraw', 'currency': kwargs.pop('currency'),
-             'amount': size, 'address': tar_addr}
+    def withdraw(self, size, tar_addr, currency=None, **kwargs):
+        q = {'command': 'withdraw', 'currency': currency, 'amount': size, 'address': tar_addr}
         q.update(kwargs)
         return self.private_query('tradingApi', params=q)
 
     @return_api_response(fmt.deposit)
-    def deposit_address(self, currency, **kwargs):
+    def deposit_address(self, currency=None, **kwargs):
         q = {'command': 'returnDepositAddresses'}
         q.update(kwargs)
         return self.private_query('tradingApi', params=q)
