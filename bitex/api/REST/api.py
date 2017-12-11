@@ -53,7 +53,7 @@ class APIClient(metaclass=ABCMeta):
         Creates a Nonce value for signature generation
         :return:
         """
-        return str(round(100000 * time.time())) 
+        return str(round(100000 * time.time()))
 
     @staticmethod
     def api_request(*args, **kwargs):
@@ -83,8 +83,7 @@ class APIClient(metaclass=ABCMeta):
 
         return url, {'params': {'test_param': "authenticated_chimichanga"}}
 
-    def query(self, method_verb, endpoint, authenticate=False,
-              *args, **kwargs):
+    def query(self, method_verb, endpoint, *args, authenticate=False, **kwargs):
         """
         Queries exchange using given data. Defaults to unauthenticated query.
         :param method_verb: valid request type (PUT, GET, POST etc)
