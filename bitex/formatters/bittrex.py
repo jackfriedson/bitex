@@ -54,7 +54,7 @@ class BtrxFormatter(Formatter):
     @staticmethod
     def withdraw(data, *args, **kwargs):
         result = {
-            'currency': kwargs.get('currency'),
+            'currency': format_currency(kwargs.get('currency')),
             'amount': args[1],
             'target_address': args[2],
         }

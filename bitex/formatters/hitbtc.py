@@ -10,6 +10,11 @@ from bitex.formatters.base import Formatter
 log = logging.getLogger(__name__)
 
 
+def format_currency(currency):
+    currency_map = {'USD': 'USDT'}
+    return currency_map.get(currency, currency)
+
+
 class HitBtcFormatter(Formatter):
 
     @staticmethod
@@ -19,7 +24,7 @@ class HitBtcFormatter(Formatter):
 
     @staticmethod
     def balance(data, *args, **kwargs):
-        return {x['currency']: x['available'] for x in data}
+        return {format_currency(x['currency']): x['available'] for x in data}
 
     @staticmethod
     def deposit(data, *args, **kwargs):
@@ -31,7 +36,7 @@ class HitBtcFormatter(Formatter):
             return False
 
         return {
-            'currency': kwargs.get('currency'),
+            'currency': format_currency(kwargs.get('currency')),
             'amount': args[1],
             'target_address': args[2],
         }
