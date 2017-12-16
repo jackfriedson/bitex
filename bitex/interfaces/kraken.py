@@ -16,8 +16,8 @@ log = logging.getLogger(__name__)
 
 
 class Kraken(KrakenREST):
-    def __init__(self, key='', secret='', key_file=''):
-        super(Kraken, self).__init__(key, secret)
+    def __init__(self, key='', secret='', key_file='', **kwargs):
+        super(Kraken, self).__init__(key, secret, **kwargs)
         if key_file:
             self.load_key(key_file)
 
@@ -92,12 +92,13 @@ class Kraken(KrakenREST):
 
     @return_api_response(fmt.withdraw)
     def withdraw(self, size, tar_addr, **kwargs):
-        q = {'amount': size, 'key': tar_addr}
+        q = {'amount': size, 'key': tar_addr, 'asset': kwargs.pop('currency')}
         q.update(kwargs)
         return self.private_query('Withdraw', params=q)
 
     @return_api_response(fmt.deposit)
     def deposit_address(self, **kwargs):
+        kwargs['asset'] = kwargs.pop('currency')
         return self.private_query('DepositAddresses', params=kwargs)
 
     """
