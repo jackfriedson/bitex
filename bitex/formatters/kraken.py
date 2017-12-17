@@ -77,7 +77,7 @@ class KrknFormatter(Formatter):
     @staticmethod
     def order(data, *args, **kwargs):
         if not data['error']:
-            return data['result']['txid']
+            return data['result']['txid'][0]
         else:
             return False
 

@@ -126,6 +126,12 @@ class Poloniex(PoloniexREST):
         return self.private_query('tradingApi', params=q)
 
     @return_api_response(None)
+    def order_trades(self, order_id, **kwargs):
+        q = {'command': 'returnOrderTrades', 'orderNumber': order_id}
+        q.update(kwargs)
+        return self.private_query('tradingApi', params=q)
+
+    @return_api_response(None)
     def trade_history(self, pair='all', **kwargs):
         q = {'currencyPair': pair, 'command': 'returnTradeHistory'}
         q.update(kwargs)
@@ -139,5 +145,4 @@ class Poloniex(PoloniexREST):
 
     @return_api_response(None)
     def fees(self):
-        return self.private_query('tradingApi',
-                                  params={'command': 'returnFeeInfo'})
+        return self.private_query('tradingApi', params={'command': 'returnFeeInfo'})
