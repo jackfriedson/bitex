@@ -5,6 +5,7 @@ https://hitbtc.com/api
 # Import Built-Ins
 import logging
 import time
+import uuid
 # Import Third-Party
 
 # Import Homebrew
@@ -72,12 +73,12 @@ class HitBtc(HitBTCREST):
 
     @return_api_response(fmt.order)
     def bid(self, pair, price, size, order_id=None, **kwargs):
-        order_id = order_id if order_id else str(time.time())
+        order_id = order_id if order_id else str(uuid.uuid4())
         return self._place_order(pair, size, price, 'buy', order_id, **kwargs)
 
     @return_api_response(fmt.order)
     def ask(self, pair, price, size, order_id=None, **kwargs):
-        order_id = order_id if order_id else str(time.time())
+        order_id = order_id if order_id else str(uuid.uuid4())
         return self._place_order(pair, size, price, 'sell', order_id, **kwargs)
 
     @return_api_response(fmt.cancel)
@@ -110,6 +111,31 @@ class HitBtc(HitBTCREST):
     def deposit_address(self, currency=None, **kwargs):
         return self.private_query('account/crypto/address/%s' % currency, params=kwargs)
 
-if __name__ == ' __main__':
-    k = HitBtc()
-    print(k.ticker('BTCUSD'))
+    """
+    Exchange Specific Methods
+    """
+
+    @return_api_response(None)
+    def currencies(self):
+        return self.public_query('currency')
+
+    @return_api_response(None)
+    def pairs(self):
+        return self.public_query('symbol')
+
+    @return_api_response(None)
+    def transaction(self, currency, txid=None, **kwargs):
+        q = {'currency': currency}
+        q.update(kwargs)
+        uri = 'account/transactions'
+        if txid:
+            uri += '/{}'.format(txid)
+        return self.private_query(uri, params=q)
+
+    @return_api_response(None)
+    def commit_withdrawal(self, txid):
+        return self.private_query('account/crypto/withdraw/{}'.format(txid), method_verb='PUT')
+
+    @return_api_response(None)
+    def rollback_withdrawal(self, txid):
+        return self.private_query('account/crypto/withdraw/{}'.format(txid), method_verb='DELETE')

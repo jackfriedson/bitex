@@ -43,4 +43,4 @@ class HitBtcFormatter(Formatter):
 
     @staticmethod
     def order(data, *args, **kwargs):
-        return data.get('id')
+        return data.get('clientOrderId')
