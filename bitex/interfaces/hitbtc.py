@@ -73,12 +73,12 @@ class HitBtc(HitBTCREST):
 
     @return_api_response(fmt.order)
     def bid(self, pair, price, size, order_id=None, **kwargs):
-        order_id = order_id if order_id else str(uuid.uuid4())
+        order_id = order_id if order_id else str(uuid.uuid4()).replace('-', '')
         return self._place_order(pair, size, price, 'buy', order_id, **kwargs)
 
     @return_api_response(fmt.order)
     def ask(self, pair, price, size, order_id=None, **kwargs):
-        order_id = order_id if order_id else str(uuid.uuid4())
+        order_id = order_id if order_id else str(uuid.uuid4()).replace('-', '')
         return self._place_order(pair, size, price, 'sell', order_id, **kwargs)
 
     @return_api_response(fmt.cancel)
@@ -92,9 +92,7 @@ class HitBtc(HitBTCREST):
 
     @return_api_response(fmt.order_status)
     def order(self, order_id, **kwargs):
-        q = {'clientOrderId': order_id}
-        q.update(kwargs)
-        return self.private_query('order', params=q)
+        return self.private_query('order/{}'.format(order_id), params=kwargs)
 
     @return_api_response(fmt.balance)
     def balance(self, **kwargs):
