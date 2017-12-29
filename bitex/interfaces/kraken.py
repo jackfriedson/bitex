@@ -151,8 +151,10 @@ class Kraken(KrakenREST):
 
         return self.private_query('TradeVolume', params=q)
 
-    def deposit_methods(self, **kwargs):
-        return self.private_query('DepositMethods', params=kwargs)
+    def deposit_methods(self, currency, **kwargs):
+        q = {'asset': currency}
+        q.update(kwargs)
+        return self.private_query('DepositMethods', params=q)
 
     def withdraw_info(self, size, tar_addr, **kwargs):
         q = {'amount': size, 'key': tar_addr, 'asset': kwargs.pop('currency')}

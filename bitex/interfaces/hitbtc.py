@@ -90,10 +90,6 @@ class HitBtc(HitBTCREST):
         else:
             return self.private_query('trading/cancel_order', params=q)
 
-    @return_api_response(fmt.order_status)
-    def order(self, order_id, **kwargs):
-        return self.private_query('order/{}'.format(order_id), params=kwargs)
-
     @return_api_response(fmt.balance)
     def balance(self, **kwargs):
         return self.private_query('trading/balance', params=kwargs)
@@ -112,6 +108,10 @@ class HitBtc(HitBTCREST):
     """
     Exchange Specific Methods
     """
+
+    @return_api_response(None)
+    def order_history(self, **kwargs):
+        return self.private_query('history/order', params=kwargs)
 
     @return_api_response(None)
     def currencies(self):
