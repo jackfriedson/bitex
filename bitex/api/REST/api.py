@@ -106,9 +106,9 @@ class APIClient(metaclass=ABCMeta):
                                             method_verb, *args, **kwargs)
         else:
             request_kwargs = kwargs
+        request_kwargs.setdefault('timeout', self.timeout)
         log.debug("Making request to: %s, kwargs: %s", url, request_kwargs)
-        r = self.api_request(method_verb, url, timeout=self.timeout,
-                             **request_kwargs)
+        r = self.api_request(method_verb, url, **request_kwargs)
         log.debug("Made %s request made to %s, with headers %s and body %s. "
                   "Status code %s", r.request.method,
                   r.request.url, r.request.headers,
