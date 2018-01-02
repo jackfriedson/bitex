@@ -91,8 +91,8 @@ class Kraken(KrakenREST):
         return self.private_query('Balance')
 
     @return_api_response(fmt.withdraw)
-    def withdraw(self, size, tar_addr, **kwargs):
-        q = {'amount': size, 'key': tar_addr, 'asset': kwargs.pop('currency')}
+    def withdraw(self, size, key, **kwargs):
+        q = {'amount': size, 'key': key, 'asset': kwargs.pop('currency')}
         q.update(kwargs)
         return self.private_query('Withdraw', params=q)
 
