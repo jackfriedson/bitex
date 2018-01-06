@@ -27,10 +27,6 @@ class HitBtcFormatter(Formatter):
         return {format_currency(x['currency']): x['available'] for x in data}
 
     @staticmethod
-    def deposit(data, *args, **kwargs):
-        return data['address']
-
-    @staticmethod
     def withdrawal(data, *args, **kwargs):
         if 'id' not in data:
             return False
