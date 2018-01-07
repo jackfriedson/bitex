@@ -17,8 +17,8 @@ log = logging.getLogger(__name__)
 
 
 class Bitfinex(BitfinexREST):
-    def __init__(self, key='', secret='', key_file='', websocket=False):
-        super(Bitfinex, self).__init__(key, secret)
+    def __init__(self, key='', secret='', key_file='', websocket=False, **kwargs):
+        super(Bitfinex, self).__init__(key, secret, **kwargs)
         if key_file:
             self.load_key(key_file)
         if websocket:
