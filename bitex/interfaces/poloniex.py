@@ -28,11 +28,16 @@ class Poloniex(PoloniexREST):
             self.wss = None
 
     def public_query(self, endpoint, **kwargs):
+        timeout = kwargs.get('params', {}).get('timeout')
+        if timeout:
+            kwargs.setdefault('timeout', timeout)
         return self.query('GET', 'public?command=' + endpoint, **kwargs)
 
     def private_query(self, endpoint, **kwargs):
-        return self.query('POST', endpoint,
-                          authenticate=True, **kwargs)
+        timeout = kwargs.get('params', {}).get('timeout')
+        if timeout:
+            kwargs.setdefault('timeout', timeout)
+        return self.query('POST', endpoint, authenticate=True, **kwargs)
 
     """
     BitEx Standardized Methods

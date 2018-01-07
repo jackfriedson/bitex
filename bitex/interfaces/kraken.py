@@ -28,10 +28,16 @@ class Kraken(KrakenREST):
 
     def public_query(self, endpoint, **kwargs):
         path = 'public/' + endpoint
+        timeout = kwargs.get('params', {}).get('timeout')
+        if timeout:
+            kwargs.setdefault('timeout', timeout)
         return self.query('GET', path, **kwargs)
 
     def private_query(self, endpoint, **kwargs):
         path = 'private/' + endpoint
+        timeout = kwargs.get('params', {}).get('timeout')
+        if timeout:
+            kwargs.setdefault('timeout', timeout)
         return self.query('POST', path, authenticate=True, **kwargs)
 
     """

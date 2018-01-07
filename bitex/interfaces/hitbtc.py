@@ -33,6 +33,9 @@ class HitBtc(HitBTCREST):
         if not method_verb:
             method_verb = 'GET'
         endpoint = 'public/' + endpoint
+        timeout = kwargs.get('params', {}).get('timeout')
+        if timeout:
+            kwargs.setdefault('timeout', timeout)
         return self.query(method_verb, endpoint, **kwargs)
 
     def private_query(self, endpoint, method_verb=None, **kwargs):
@@ -41,6 +44,9 @@ class HitBtc(HitBTCREST):
         if method_verb == 'POST':
             params = kwargs.pop('params')
             kwargs['data'] = params
+        timeout = kwargs.get('params', {}).get('timeout')
+        if timeout:
+            kwargs.setdefault('timeout', timeout)
         return self.query(method_verb, endpoint, auth=(self.key, self.secret), **kwargs)
 
     """

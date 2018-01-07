@@ -28,9 +28,15 @@ class Bitfinex(BitfinexREST):
             self.wss = None
 
     def public_query(self, endpoint, **kwargs):
+        timeout = kwargs.get('params', {}).get('timeout')
+        if timeout:
+            kwargs.setdefault('timeout', timeout)
         return self.query('GET', endpoint, **kwargs)
 
     def private_query(self, endpoint, **kwargs):
+        timeout = kwargs.get('params', {}).get('timeout')
+        if timeout:
+            kwargs.setdefault('timeout', timeout)
         return self.query('POST', endpoint, authenticate=True, **kwargs)
 
     """

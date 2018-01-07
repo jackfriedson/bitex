@@ -29,9 +29,15 @@ class GDAX(GDAXRest):
             self.wss = None
 
     def public_query(self, endpoint, **kwargs):
+        timeout = kwargs.get('params', {}).get('timeout')
+        if timeout:
+            kwargs.setdefault('timeout', timeout)
         return self.query('GET', endpoint, **kwargs)
 
     def private_query(self, endpoint, method_verb='POST', **kwargs):
+        timeout = kwargs.get('params', {}).get('timeout')
+        if timeout:
+            kwargs.setdefault('timeout', timeout)
         return self.query(method_verb, endpoint, authenticate=True, **kwargs)
 
     """

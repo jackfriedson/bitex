@@ -22,9 +22,15 @@ class Bittrex(BittrexREST):
             self.load_key(key_file)
 
     def public_query(self, endpoint, **kwargs):
+        timeout = kwargs.get('params', {}).get('timeout')
+        if timeout:
+            kwargs.setdefault('timeout', timeout)
         return self.query('GET', 'public/' + endpoint, **kwargs)
 
     def private_query(self, endpoint, **kwargs):
+        timeout = kwargs.get('params', {}).get('timeout')
+        if timeout:
+            kwargs.setdefault('timeout', timeout)
         return self.query('GET', endpoint, authenticate=True, **kwargs)
 
     """
