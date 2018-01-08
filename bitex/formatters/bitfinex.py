@@ -27,7 +27,3 @@ class BtfxFormatter(Formatter):
     @staticmethod
     def cancel(data, *args, **kwargs):
         return True if 'message' not in data else False
-
-    @staticmethod
-    def order_status(data, *args, **kwargs):
-        return data['is_live']
