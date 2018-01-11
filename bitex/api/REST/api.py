@@ -83,7 +83,7 @@ class APIClient(metaclass=ABCMeta):
 
         return url, {'params': {'test_param': "authenticated_chimichanga"}}
 
-    def query(self, method_verb, endpoint, *args, authenticate=False, **kwargs):
+    def query(self, method_verb, endpoint, *args, authenticate=False, timeout=None, **kwargs):
         """
         Queries exchange using given data. Defaults to unauthenticated query.
         :param method_verb: valid request type (PUT, GET, POST etc)
@@ -106,7 +106,7 @@ class APIClient(metaclass=ABCMeta):
                                             method_verb, *args, **kwargs)
         else:
             request_kwargs = kwargs
-        request_kwargs.setdefault('timeout', self.timeout)
+        request_kwargs.setdefault('timeout', timeout or self.timeout)
         log.debug("Making request to: %s, kwargs: %s", url, request_kwargs)
         r = self.api_request(method_verb, url, **request_kwargs)
         log.debug("Made %s request made to %s, with headers %s and body %s. "
