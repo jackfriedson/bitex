@@ -488,7 +488,6 @@ class BitfinexWSS(WSSAPI):
         if 'version' in kwargs:
             # set api version number and exit
             self.api_version = kwargs['version']
-            print("Initialized API with version %s" % self.api_version)
             return
         try:
             info_code = str(kwargs['code'])
